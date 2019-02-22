@@ -16,8 +16,8 @@ app
 
     .container
     {
-        width: 80vw;
-        height: 80vh;
+        width: 100vw;
+        height: 100vh;
     }
 
     #root
@@ -29,6 +29,41 @@ app
 
     svg
     {       
+        .hex
+        {
+            fill: var(--color-background);
+            cursor: pointer;
 
+            &.outline
+            {
+              //  opacity: 0.5;
+            }
+
+            &.inside
+            {
+                fill: var(--color-bottom);    
+             }
+            &.center
+            {
+                fill: var(--color-background);    
+            }
+        }
+
+        line
+        {
+            stroke: var(--color-bottom);
+            //stroke-dasharray: 5 10;
+            //stroke-linecap: round;
+        }
+
+        .label
+        {
+            font-family: sans-serif;
+            text-anchor: middle;
+            font-weight: bold;
+            font-size: 1.3rem;
+            fill: var(--color-base);
+            pointer-events: none;
+        }
     }
 }
