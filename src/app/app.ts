@@ -47,7 +47,8 @@ export class App extends Component
             {id: '10', name: 'Atque provident', group: 3}
         ],
         links: [
-            {source: '1', target: '2', value: 14},
+            {source: '1', target: '2', value: 12},
+            {source: '1', target: '2', value: 12},
             {source: '1', target: '3', value: 1},
             {source: '1', target: '4', value: 3},
             {source: '1', target: '6', value: 6},
@@ -56,8 +57,8 @@ export class App extends Component
             {source: '3', target: '4', value: 7},
             {source: '3', target: '5', value: 2},
             {source: '3', target: '6', value: 2},
-            {source: '4', target: '5', value: 6},
-            {source: '4', target: '6', value: 6},
+            {source: '4', target: '5', value: 4},
+            {source: '4', target: '6', value: 10},
             {source: '5', target: '6', value: 1},
             {source: '6', target: '7', value: 1},
             {source: '6', target: '8', value: 8},
@@ -79,13 +80,14 @@ export class App extends Component
     private getLinks(links:Link[]):any[]
     {
         const maxValue = max(this.data.links, d => d.value);
+        
 
         return this.data.links.map(d => {
-            let newD = Object.create(d)
-            let gap = this.hexSize / 2;
+            let newD = Object.create(d);
+            let gap = this.hexSize * 0.25;
             newD.value = d.value < (maxValue *.5) ? 0 : d.value;
-            newD.distance = gap + ((maxValue * gap) - d.value * gap);
-            if(newD.distance > this._width / 3) newD.distance = this._width / 3
+            newD.distance = gap + ((maxValue * gap) - (newD.value * gap));
+            if(newD.distance > this.sizeBy / 8) newD.distance = this._width / 3
             return newD;
         });
     }
@@ -109,7 +111,7 @@ export class App extends Component
                 .force("link", forceLink(links).distance(d => d.distance))
                 .force("charge", forceManyBody().strength(-50))
                 .force("center", forceCenter(this._width / 2, this._height / 2))
-                .force('collision', forceCollide().radius(this.hexSize))
+                .force('collision', forceCollide().radius(this.hexSize * 1.5))
 
             const svg = select(this.svg);
 
@@ -275,8 +277,7 @@ export class App extends Component
             this._width = this._container.offsetWidth;
             this._height = this._container.offsetHeight;
 
-            let sizeBy = this.width > this.height ? this.height : this.width;
-            // this.hexSize = sizeBy  * .06;
+            // this.hexSize = this.sizeBy  * .06;
             // if(this.hexSize > 60) this.hexSize = 60;
 
             this.svg.setAttribute('width', String(this._width));
@@ -290,7 +291,7 @@ export class App extends Component
 
                 this.sim.force("link", forceLink(links).distance(d => d.distance))
                 this.sim.force("center", forceCenter(this._width / 2, this._height / 2));
-                this.sim.force("charge", forceManyBody().strength(-this.hexSize))
+                this.sim.force("charge", forceManyBody().strength(-this.hexSize / 2))
                 this.sim.restart();
             }
         }
@@ -298,5 +299,6 @@ export class App extends Component
     
     private get width() { return this._width - (this.padding * 2) };
     private get height() { return this._height - (this.padding * 2) };
+    private get sizeBy() { return this._height > this._width ? this._width : this._height };
 
 }
